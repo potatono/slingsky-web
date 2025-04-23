@@ -1,0 +1,30 @@
+services:
+    atpfirebase-web:
+        image: atpfirebase-web:latest
+        container_name: atpfirebase-web
+        hostname: atpfirebase-web
+        build:
+          context: .
+          dockerfile: Dockerfile
+        ports:
+          - "5005:80"
+        volumes:
+          - ./public:/app/public
+          - ./functions/views:/app/functions/views
+          - ./functions/index.js:/app/functions/index.js
+          - ./functions/firebase.js:/app/functions/firebase.js
+          - ./functions/oauth.js:/app/functions/oauth.js
+          - ./server.js:/app/server.js
+          
+    atpfirebase-tunnel:
+        image: cloudflare/cloudflared:latest
+        container_name: atpfirebase-tunnel
+        hostname: atpfirebase-tunnel
+        command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+        environment:
+          - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+          - TUNNEL_HOSTNAME=atpfirebase.jumpropelabs.com
+          - TUNNEL_PORT=5005
+        depends_on:
+          - atpfirebase-web
+

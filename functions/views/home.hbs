@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ATProto Firebase Example</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Roboto", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    header { 
+      color: #fff;
+      text-align: center;
+      background-image: url('/s/img/home-hero-image.jpg');
+      background-position-y: 50%;
+      box-shadow: inset 0 0 0 1000px rgba(24,24,16,.80);
+      height: 100px;
+      margin-top: -10px;
+    }
+    header h1 {
+      font-size: 4em;
+      text-shadow: 1px 1px 5px rgb(50, 0, 0),
+        -1px -1px 5px rgb(50,0,0)
+    }
+    .summary, .features {
+      padding: 1rem 2rem;
+    }
+    .summary {
+      font-size: 1.5em;
+    }
+
+    a.button {
+      display: inline-block;
+      padding: 0.5em 1em;
+      margin: 1em;
+      background-color: #333;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 0.5em;
+    }
+  </style>
+
+  <script type="module">
+      import { firebase } from "/s/jrfb.js?v=202503101338";
+
+      function getTokenFromCookie() {
+        // If token is set in the cookie use it to authenticate
+        const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+        return token;
+      }
+
+      function deleteTokenFromCookie() {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
+
+      async function signInWithToken(token) {
+          await firebase.auth.signInWithCustomToken(firebase.auth.instance, token);
+
+          return firebase.auth.instance.currentUser;
+      }
+
+      function signOut() {
+        firebase.auth.signOut(firebase.auth.instance);
+        deleteTokenFromCookie();
+      }
+
+      firebase.auth.instance.onAuthStateChanged(async (user) => {
+        try {
+          if (user) {
+            console.log('User is signed in');
+            var tokenResult = await user.getIdTokenResult();
+            var claims = tokenResult.claims;
+
+            user.displayName = claims.displayName;
+            user.handle = claims.handle;
+            user.avatar = claims.avatar;
+            user.banner = claims.banner;
+            user.description = claims.description;
+            
+            document.getElementById('user').textContent = user.displayName;
+            document.getElementById('signedout').style.display = 'none';
+            document.getElementById('signedin').style.display = 'block';
+
+            window.currentUser = user;
+          } 
+          else {
+            console.log('No user is signed in');
+            document.getElementById('signedout').style.display = 'block';
+            document.getElementById('signedin').style.display = 'none';
+
+            const token = getTokenFromCookie();
+            if (token) {
+              signInWithToken(token);
+            }
+
+            window.currentUser = null;
+          }
+        }
+        catch (err) {
+          console.error(err);
+          window.currentUser = null;
+        }
+      });
+
+      window.firebase = firebase;
+      window.signOut = signOut;
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1>ATProto Firebase Example</h1>
+  </header>
+
+  <section id="signedout" class="summary">
+    <p>
+      Welcome to a thing.  Please sign in.
+    </p>
+    <a class="button" href="/login?return_url=/">Sign In</a>
+  </section>
+  <section id="signedin" class="summary">
+    <p>
+      Welcome back <span id="user">Nobody</span>.
+    </p>
+    <a class="button" href="javascript:signOut()">Sign Out</a>
+  </section>
+
+
+
+</body>
+</html>

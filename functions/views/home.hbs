@@ -3,48 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ATProto Firebase Example</title>
+  <title>Slingsky</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: "Roboto", Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-    }
-    header { 
-      color: #fff;
-      text-align: center;
-      background-image: url('/s/img/home-hero-image.jpg');
-      background-position-y: 50%;
-      box-shadow: inset 0 0 0 1000px rgba(24,24,16,.80);
-      height: 100px;
-      margin-top: -10px;
-    }
-    header h1 {
-      font-size: 4em;
-      text-shadow: 1px 1px 5px rgb(50, 0, 0),
-        -1px -1px 5px rgb(50,0,0)
-    }
-    .summary, .features {
-      padding: 1rem 2rem;
-    }
-    .summary {
-      font-size: 1.5em;
-    }
-
-    a.button {
-      display: inline-block;
-      padding: 0.5em 1em;
-      margin: 1em;
-      background-color: #333;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 0.5em;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Mako&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Mako','Roboto','Arial','sans-serif'] }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <script type="module">
       import { firebase } from "/s/jrfb.js?v=202503101338";
@@ -114,24 +86,72 @@
   </script>
 </head>
 
-<body>
-  <header>
-    <h1>ATProto Firebase Example</h1>
-  </header>
+<body class="font-sans m-0 p-0 leading-relaxed">
+  <div class="bg-[#5A2328] text-gray-100 h-[500px] flex items-center justify-center xl:relative xl:block">
+    <div class="w-full px-16 xl:px-0 xl:w-1/3 xl:absolute xl:left-1/4 xl:top-1/2 xl:transform xl:-translate-x-1/2 xl:-translate-y-1/2">
+      <img id="logo" src="/s/img/logo-horiz-vista.svg" class="h-20 w-auto" alt="Slingsky">
+      <p class="text-xl mt-4">Effortlessly support your favorite creators on Bluesky and ATProto apps. Set your budget, interact, and we'll handle the rest.</p>
+      <a class="inline-block px-4 py-2 my-6 bg-[#80A4ED] text-black rounded hover:bg-[#dbad6aff]" href="/login?return_url=/">Get Started</a>
+      <a class="inline-block ml-4 my-6" href="https://bsky.app/profile/justin.jplt.com" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.icons8.com/?size=100&id=ahcTsEkPQu79&format=png&color=80A4ED" alt="Bluesky" class="h-6 w-6 inline-block" />
+      </a>
+      <a class="inline-block ml-4 my-6" href="mailto:justin@jplt.com">
+        <img src="https://img.icons8.com/?size=100&id=85119&format=png&color=80A4ED" alt="Email" class="h-6 w-6 inline-block" />
+      </a>
+    </div>
+    <div class="w-1/3 hidden xl:block"></div>    
+    <div class="w-1/3 hidden xl:block absolute bottom-0 right-0 h-[400px] overflow-hidden -translate-x-1/3">
+      <img id="screenshot" src="/s/img/v2-Transactions.png" class="w-[400px] object-cover object-top" />
+    </div>
+  </div>
+  <div class="bg-[#5A2328] h-[20px] mt-[5px]"></div>
+  <div class="bg-[#5A2328] h-[15px] mt-[5px]"></div>
+  <div class="bg-[#5A2328] h-[10px] mt-[5px]"></div>
+  <div class="bg-[#5A2328] h-[5px] mt-[5px]"></div>
+  
 
-  <section id="signedout" class="summary">
+  <section class="py-16">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center gap-8">
+      <div class="md:w-1/2 flex justify-center">
+        <img src="/s/img/v2-Settings.png" alt="Settings Screenshot" class="h-[600px] w-auto">
+      </div>
+      <div class="md:w-1/2">
+        <h2 class="text-3xl font-semibold mb-4">Support Creators Effortlessly</h2>
+        <p class="text-lg text-gray-700">Slingsky makes it simple to show appreciation to your favorite Bluesky creators. Send micropayments effortlessly—no account needed for recipients to start receiving your support. Plus, creators can easily thank you for your generosity.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-[#dbad6a] h-[5px] mb-[5px]"></div>
+  <div class="bg-[#dbad6a] h-[10px] mb-[5px]"></div>
+  <div class="bg-[#dbad6a] h-[15px] mb-[5px]"></div>
+  <div class="bg-[#dbad6a] h-[20px] mb-[5px]"></div>
+  <section class="bg-[#dbad6a] py-16">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center gap-8">
+      <div class="md:w-1/2">
+        <h2 class="text-3xl font-semibold mb-4">Empowering the ATmosphere</h2>
+        <p class="text-lg text-gray-700">Slingsky is committed to supporting the broader ATproto ecosystem. Easily integrate custom subscriptions, tips, and monetization tools into your app, and let your users enjoy the benefits of supporting creators across the entire ATmosphere.</p>
+      </div>
+      <div class="md:w-1/2 flex justify-center">
+        <img src="/s/img/atcon-logo.png" alt="ATCON Logo" class="h-[400px] w-auto">
+      </div>
+    </div>
+  </section>
+
+<!--
+  <section id="signedout" class="p-4 text-lg">
     <p>
       Welcome to a thing.  Please sign in.
     </p>
-    <a class="button" href="/login?return_url=/">Sign In</a>
+    <a class="inline-block px-4 py-2 my-4 bg-gray-800 text-white rounded hover:bg-gray-700" href="/login?return_url=/">Sign In</a>
   </section>
-  <section id="signedin" class="summary">
+  <section id="signedin" class="p-4 text-lg hidden">
     <p>
       Welcome back <span id="user">Nobody</span>.
     </p>
-    <a class="button" href="javascript:signOut()">Sign Out</a>
+    <a class="inline-block px-4 py-2 my-4 bg-gray-800 text-white rounded hover:bg-gray-700" href="javascript:signOut()">Sign Out</a>
   </section>
-
+-->
 
 
 </body>

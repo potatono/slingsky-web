@@ -1,13 +1,13 @@
 services:
-    atpfirebase-web:
-        image: atpfirebase-web:latest
-        container_name: atpfirebase-web
-        hostname: atpfirebase-web
+    slingsky-web:
+        image: slingsky-web:latest
+        container_name: slingsky-web
+        hostname: slingsky-web
         build:
           context: .
           dockerfile: Dockerfile
         ports:
-          - "5005:80"
+          - "5006:80"
         volumes:
           - ./public:/app/public
           - ./functions/views:/app/functions/views
@@ -16,15 +16,15 @@ services:
           - ./functions/oauth.js:/app/functions/oauth.js
           - ./server.js:/app/server.js
           
-    atpfirebase-tunnel:
+    slingsky-tunnel:
         image: cloudflare/cloudflared:latest
-        container_name: atpfirebase-tunnel
-        hostname: atpfirebase-tunnel
+        container_name: slingsky-tunnel
+        hostname: slingsky-tunnel
         command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
         environment:
           - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
-          - TUNNEL_HOSTNAME=atpfirebase.jumpropelabs.com
-          - TUNNEL_PORT=5005
+          - TUNNEL_HOSTNAME=dev.slingsky.app
+          - TUNNEL_PORT=5006
         depends_on:
-          - atpfirebase-web
+          - slingsky-web
 

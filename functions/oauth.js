@@ -5,15 +5,15 @@ const { db } = require('./firebase');
 const { NodeOAuthClient } = require('@atproto/oauth-client-node');
 const { JoseKey } = require('@atproto/jwk-jose');
 
-const host = 'atpfirebase.jumpropelabs.com';
+const host = 'dev.slingsky.app';
 
 // Initialize ATProto OAuth client
 const clientMetadata = {
     // Must be a URL that will be exposing this metadata
     client_id: `https://${host}/client-metadata.json`,
-    client_name: 'ATProto Firebase OAuth Example',
+    client_name: 'Slingsky',
     client_uri: `https://${host}`,
-    logo_uri: `https://${host}/s/logo.png`,
+    logo_uri: `https://${host}/s/img/logo.png`,
     tos_uri: `https://${host}/s/tos`,
     policy_uri: `https://${host}/s/policy`,
     redirect_uris: [`https://${host}/callback`],

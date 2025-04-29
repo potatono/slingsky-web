@@ -55,15 +55,19 @@ app.post('/login', async (req, res, next) => {
   try {
     const handle = req.body.handle;
     const state = Math.random().toString(36).substring(7);
+    console.log("Getting OAuth client for handle:", handle);
     const client = await getOAuthClient();
+    console.log("Authorizing");
     const url = await client.authorize(handle, {
       state
     })
 
+    console.log("Redirecting to:", url);
     res.redirect(url)
   } 
   catch (err) {
-    res.redirect('/login?handle=' + encodeURIComponent(req.body.handle) + 'error=' + encodeURIComponent(err.message));
+    console.error('Error during login:', err);
+    res.redirect('/login?handle=' + encodeURIComponent(req.body.handle) + '&error=' + encodeURIComponent(err.message));
   }
 });
 

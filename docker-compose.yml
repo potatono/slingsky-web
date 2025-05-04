@@ -11,11 +11,9 @@ services:
         volumes:
           - ./public:/app/public
           - ./functions/views:/app/functions/views
+          - ./functions/jr:/app/functions/jr
           - ./functions/index.js:/app/functions/index.js
-          - ./functions/firebase.js:/app/functions/firebase.js
-          - ./functions/oauth.js:/app/functions/oauth.js
-          - ./server.js:/app/server.js
-          
+          - ./server.js:/app/server.js          
     slingsky-tunnel:
         image: cloudflare/cloudflared:latest
         container_name: slingsky-tunnel

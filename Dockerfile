@@ -27,9 +27,8 @@ COPY server.js .
 # Copy the package.json and install the dependencies
 COPY functions/package.json ./functions/
 COPY functions/views ./functions/views
+COPY functions/jr ./functions/jr
 COPY functions/*.js ./functions/
-COPY functions/jwtPrivateKey.json ./functions/
-COPY functions/serviceAccountKey.json ./functions/
 RUN cd functions && npm install
 
 # Install nodemon for hot reloading of development

@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mako&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -16,74 +18,6 @@
       }
     };
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <script type="module">
-      import { firebase } from "/s/jrfb.js?v=202503101338";
-
-      function getTokenFromCookie() {
-        // If token is set in the cookie use it to authenticate
-        const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-
-        return token;
-      }
-
-      function deleteTokenFromCookie() {
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      }
-
-      async function signInWithToken(token) {
-          await firebase.auth.signInWithCustomToken(firebase.auth.instance, token);
-
-          return firebase.auth.instance.currentUser;
-      }
-
-      function signOut() {
-        firebase.auth.signOut(firebase.auth.instance);
-        deleteTokenFromCookie();
-      }
-
-      firebase.auth.instance.onAuthStateChanged(async (user) => {
-        try {
-          if (user) {
-            console.log('User is signed in');
-            var tokenResult = await user.getIdTokenResult();
-            var claims = tokenResult.claims;
-
-            user.displayName = claims.displayName;
-            user.handle = claims.handle;
-            user.avatar = claims.avatar;
-            user.banner = claims.banner;
-            user.description = claims.description;
-            
-            document.getElementById('user').textContent = user.displayName;
-            document.getElementById('signedout').style.display = 'none';
-            document.getElementById('signedin').style.display = 'block';
-
-            window.currentUser = user;
-          } 
-          else {
-            console.log('No user is signed in');
-            document.getElementById('signedout').style.display = 'block';
-            document.getElementById('signedin').style.display = 'none';
-
-            const token = getTokenFromCookie();
-            if (token) {
-              signInWithToken(token);
-            }
-
-            window.currentUser = null;
-          }
-        }
-        catch (err) {
-          console.error(err);
-          window.currentUser = null;
-        }
-      });
-
-      window.firebase = firebase;
-      window.signOut = signOut;
-  </script>
 </head>
 
 <body class="font-sans m-0 p-0 leading-relaxed">
@@ -91,7 +25,7 @@
     <div class="w-full px-16 xl:px-0 xl:w-1/3 xl:absolute xl:left-1/4 xl:top-1/2 xl:transform xl:-translate-x-1/2 xl:-translate-y-1/2">
       <img id="logo" src="/s/img/logo-horiz-vista.svg" class="h-20 w-auto" alt="Slingsky">
       <p class="text-xl mt-4">Effortlessly support your favorite creators on Bluesky and ATProto apps. Set your budget, interact, and we'll handle the rest.</p>
-      <a class="inline-block px-4 py-2 my-6 bg-[#80A4ED] text-black rounded hover:bg-[#dbad6aff]" href="/login?return_url=/">Get Started</a>
+      <a class="inline-block px-4 py-2 my-6 bg-[#80A4ED] text-black rounded hover:bg-[#dbad6aff]" href="/login?return_url=/dashboard">Get Started</a>
       <a class="inline-block ml-4 my-6" href="https://bsky.app/profile/justin.jplt.com" target="_blank" rel="noopener noreferrer">
         <img src="https://img.icons8.com/?size=100&id=ahcTsEkPQu79&format=png&color=80A4ED" alt="Bluesky" class="h-6 w-6 inline-block" />
       </a>

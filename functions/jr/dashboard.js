@@ -132,8 +132,9 @@ class Dashboard {
 
     for (var i = 0; i < summary.length; i++) {
       var item = summary[i];
-      var n = String(i + 1).padStart(4, "0");
-      var docId = `${n}:${item.did}`;
+      //var n = String(i + 1).padStart(4, "0");
+      //var docId = `${n}:${item.did}`;
+      var docId = item.did;
       await dashboardRef.doc(docId).set(item);
     }
   }

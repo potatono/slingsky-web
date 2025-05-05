@@ -1,5 +1,5 @@
 import van from "https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-1.5.5.min.js";
-import { firebase } from "/s/jrfb.js?v=2025042901";
+import { firebase } from "/s/jrfb.js?v=2025050401";
 import { eventbus } from "/s/eventbus.js?v=2025042901";
 
 class Slingsky {
@@ -22,7 +22,6 @@ class Slingsky {
       isSyncing: van.state(false),
       budget: van.state(25),
       balance: van.state(25),
-      rows: {},
     };
   }
 
@@ -127,25 +126,32 @@ class Slingsky {
     );
   }
 
-  changePayout(id, delta) {
-    console.log(this.state.rows[id].val);
+  changePayout(item, delta) {
     if (delta > 0 && this.state.balance.val < this.state.budget.val) {
-      this.state.rows[id].val += 1;
+      item.potentialPayout += 1;
       this.state.balance.val += 1;
-    } else if (delta < 0 && this.state.rows[id].val > 0) {
-      this.state.rows[id].val -= 1;
+      this.save(item);
+    } else if (delta < 0 && item.potentialPayout > 0) {
+      item.potentialPayout -= 1;
       this.state.balance.val -= 1;
+      this.save(item);
     }
-    console.log(this.state.rows[id].val);
-    return false;
   }
 
   getPayoutRow(item) {
     const { div, img, span, button } = van.tags;
 
-    // If item.potentialPayout is zero, gray it out.
-    var statusClass = item.potentialPayout == 0 ? "bg-gray-100" : "";
-    this.state.rows[item.id] = van.state(item.potentialPayout);
+    console.log(`Rendering payout row for item: ${item.id}`);
+    var statusClass = "";
+
+    if (item.changed) {
+      statusClass = "bg-[#dbad6a]";
+    }
+    else if (item.potentialPayout == 0) {
+      statusClass = "bg-gray-100";
+    }
+    //var currentPayout = van.state(item.potentialPayout);
+    //this.state.rows[item.id] = van.state(item.potentialPayout);
     var row = div(
       {
         class: `flex items-center p-4 bg-white rounded shadow ${statusClass}`,
@@ -172,16 +178,16 @@ class Slingsky {
           {
             type: "button",
             class: "text-gray-500 hover:text-gray-700",
-            onclick: () => this.changePayout(item.id, -1),
+            onclick: () => this.changePayout(item, -1),
           },
           "▼"
         ),
-        span({ class: "font-bold" }, () => `$${this.state.rows[item.id].val}`),
+        span({ class: "font-bold" }, () => `$${item.potentialPayout}`),
         button(
           {
             type: "button",
             class: "text-gray-500 hover:text-gray-700",
-            onclick: () => this.changePayout(item.id, 1),
+            onclick: () => this.changePayout(item, 1),
           },
           "▲"
         )
@@ -194,6 +200,7 @@ class Slingsky {
   getTotalRow() {
     const { div, img, span, a } = van.tags;
 
+    console.log("Rendering total row");
     var row = div(
       {
         class: `flex items-center p-4 bg-white rounded shadow bg-[#BCD3F2]`,
@@ -223,7 +230,7 @@ class Slingsky {
         { class: "flex items-center space-x-2" },
         span(
           { class: "font-bold" },
-          `$${this.state.balance.val}/${this.state.budget.val}`
+          () => `$${this.state.balance.val}/${this.state.budget.val}`
         )
       )
     );
@@ -240,7 +247,13 @@ class Slingsky {
         {
           class: "container mx-auto mt-4 flex flex-col max-w-[960px] space-y-4",
         },
-        () => {
+        (dom) => {
+          // If we've already rendered the dashboard return it
+          // That way down stream state changes will not update the whole dashboard
+          //if (dom && dom.childElementCount > 0)
+          //  return dom;
+
+          console.log("Rendering dashboard");
           var hasTotalRow = false;
           var rows = [];
           for (const item of this.state.dashboard.val) {
@@ -300,15 +313,49 @@ class Slingsky {
         "current"
       );
 
-      firebase.db.onSnapshot(ref, (snapshot) => {
+      const query = firebase.db.query(ref, 
+        firebase.db.orderBy("potentialPayout", "desc"),
+        firebase.db.orderBy("displayName", "asc")
+      );
+
+      firebase.db.onSnapshot(query, (snapshot) => {
         const dashboard = snapshot.docs.map((doc) => ({
           id: doc.id,
+          changed: false,
           ...doc.data(),
         }));
+
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "modified") {
+            console.log("Modified item:", change.doc.id);
+            dashboard[change.newIndex].changed = true;
+          }
+        });
 
         this.state.dashboard.val = dashboard;
       });
     });
+  }
+
+  save(item) {
+    // Save the item to the database
+    const ref = firebase.db.doc(
+      firebase.db.instance,
+      "dashboard",
+      this.state.user.val.uid,
+      "current",
+      item.id
+    );
+
+    delete item.changed; // Remove the changed flag before saving
+    firebase.db.setDoc(ref, item)
+    .then(() => {
+      console.log("Item saved successfully");
+    })
+    .catch((error) => {
+      console.error("Error saving item:", error);
+    });
+
   }
 
   getTokenFromCookie() {
